@@ -56,9 +56,9 @@
     <color name="gradient_end">#FF9800</color>
 
 <!--    status_pending, status_upcoming, status_completed -->
-    <color name="status_pending">#FFC107</color>
-    <color name="status_upcoming">#2196F3</color>
-    <color name="status_completed">#4CAF50</color>
+    <color name="status_pending">#28A62C</color>
+    <color name="status_upcoming">#9E9E9E</color>
+    <color name="status_completed">#F44336</color>
 
 <!--    <color name="primary_light">#E3F2FD</color>-->
     <color name="shortlist_icon_color">@color/primary</color>

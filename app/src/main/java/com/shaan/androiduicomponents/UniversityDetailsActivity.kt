@@ -1,9 +1,11 @@
 package com.shaan.androiduicomponents
 
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.shaan.androiduicomponents.models.University
 
 class UniversityDetailsActivity : AppCompatActivity() {
@@ -32,6 +34,13 @@ class UniversityDetailsActivity : AppCompatActivity() {
             ?.map { (program, gpa) -> "$program: SSC ${gpa["SSC"]}, HSC ${gpa["HSC"]}" }?.joinToString("\n")
         findViewById<TextView>(R.id.additionalRequirementsTextView).text = university?.additionalInfo?.additionalRequirements?.map { (subject, requirement) -> "$subject: $requirement" }?.joinToString("\n")
         findViewById<TextView>(R.id.applyButton).text = university?.additionalInfo?.applicationLink
+        val logoImageView = findViewById<ImageView>(R.id.imageUrl)
+        Glide.with(this)
+            .load(university?.generalInfo?.imageUrl)
+            .placeholder(R.drawable.ic_profile_placeholder)
+            .error(R.drawable.ic_public_university)
+            .into(logoImageView)
+
 
         if (university == null) {
             Toast.makeText(this, "Error: University details not found", Toast.LENGTH_SHORT).show()

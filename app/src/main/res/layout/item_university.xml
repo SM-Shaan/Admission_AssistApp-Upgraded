@@ -11,102 +11,59 @@
     app:cardElevation="4dp"
     app:strokeWidth="0dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
 
-        <!-- University Logo -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/universityLogo"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginVertical="16dp"
-            android:padding="2dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:scaleType="centerCrop"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.ExtraLarge"
-            app:strokeColor="@color/primary_light"
-            app:strokeWidth="1dp"
-            tools:src="@tools:sample/avatars"/>
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"/>
 
-        <!-- University Details Container -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:orientation="vertical"
-            app:layout_constraintStart_toEndOf="@id/universityLogo"
-            app:layout_constraintEnd_toStartOf="@id/shortlistButton"
-            app:layout_constraintTop_toTopOf="@id/universityLogo"
-            app:layout_constraintBottom_toBottomOf="@id/universityLogo">
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical">
 
-            <!-- University Name -->
             <TextView
                 android:id="@+id/universityNameText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-                android:textColor="@color/text_primary"
-                tools:text="University of Engineering and Technology"/>
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
 
-            <!-- University Type -->
-            <TextView
-                android:id="@+id/universityTypeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:paddingStart="8dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="4dp"
-                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-                android:textColor="@color/black"
-                tools:text="Public"/>
-
-            <!-- Location with Icon -->
+<!--            university type-->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/universityType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"/>
 
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_location"
-                    app:tint="@color/text_secondary"/>
 
                 <TextView
                     android:id="@+id/universityLocation"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                    android:textColor="@color/text_secondary"
-                    tools:text="Dhaka, Bangladesh"/>
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"/>
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Shortlist Button -->
         <ImageButton
             android:id="@+id/shortlistButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_shortlist_selector"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:tint="@color/shortlist_icon_color"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:padding="8dp"/>
+    </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

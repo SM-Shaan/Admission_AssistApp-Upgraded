@@ -60,13 +60,6 @@
                             android:textColor="@color/white"/>
                     </LinearLayout>
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/profileImage"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_profile"
-                        app:shapeAppearanceOverlay="@style/CircleImageView"/>
                 </LinearLayout>
 
                 <!-- Quick Stats Cards -->
@@ -138,74 +131,83 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Search Bar -->
+<!--            &lt;!&ndash; Search Bar &ndash;&gt;-->
+<!--            <com.google.android.material.card.MaterialCardView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="16dp"-->
+<!--                app:cardCornerRadius="28dp"-->
+<!--                app:cardElevation="4dp">-->
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="56dp"-->
+<!--                    android:gravity="center_vertical"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:paddingHorizontal="16dp">-->
+
+<!--                    <ImageView-->
+<!--                        android:layout_width="24dp"-->
+<!--                        android:layout_height="24dp"-->
+<!--                        android:src="@drawable/baseline_search_24"-->
+<!--                        app:tint="@color/text_secondary"/>-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:layout_marginStart="16dp"-->
+<!--                        android:text="Search universities..."-->
+<!--                        android:textAppearance="@style/TextAppearance.Material3.BodyLarge"-->
+<!--                        android:textColor="@color/text_secondary"/>-->
+<!--                </LinearLayout>-->
+<!--            </com.google.android.material.card.MaterialCardView>-->
+
+
+            <!-- Popular Universities Section -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                app:cardCornerRadius="28dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="16dp">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/baseline_search_24"
-                        app:tint="@color/text_secondary"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="16dp"
-                        android:text="Search universities..."
-                        android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-                        android:textColor="@color/text_secondary"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Popular Universities Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
+                    <!-- Section Header -->
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:text="Popular Universities"
                         android:textAppearance="@style/TextAppearance.Material3.TitleLarge"/>
 
-                    <com.google.android.material.button.MaterialButton
-                        style="@style/Widget.Material3.Button.TextButton"
+                    <!-- Loading Progress -->
+                    <ProgressBar
+                        android:id="@+id/loadingProgressBar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="View All"/>
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone"/>
+
+                    <!-- Universities List -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/popularUniversitiesRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:clipToPadding="false"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="4dp"
+                        android:scrollbars="none"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
                 </LinearLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/popularUniversitiesRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-            </LinearLayout>
-
+            </com.google.android.material.card.MaterialCardView>
             <!-- Main Features Section -->
             <TextView
                 android:layout_width="match_parent"
@@ -552,6 +554,7 @@
                     </com.google.android.material.card.MaterialCardView>
                 </androidx.gridlayout.widget.GridLayout>
             </LinearLayout>
+
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottomNavigation"

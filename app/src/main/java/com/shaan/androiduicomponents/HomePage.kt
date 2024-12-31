@@ -16,6 +16,32 @@ import com.shaan.androiduicomponents.fragments.HomeFragment
 import com.shaan.androiduicomponents.helpers.NotificationHelper
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.shaan.androiduicomponents.helpers.FirebaseHelper
+import com.shaan.androiduicomponents.models.University
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import android.view.View
+import android.widget.TextView
+import android.graphics.Rect
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import com.google.android.material.button.MaterialButton
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.shaan.androiduicomponents.UniversityListActivity
+import java.io.IOException
+import kotlinx.coroutines.Job
+import com.shaan.androiduicomponents.models.AdditionalInfo
+import com.shaan.androiduicomponents.models.AdmissionInfo
+import com.shaan.androiduicomponents.models.AdmissionTestDetails
+import com.shaan.androiduicomponents.models.GeneralInfo
+import com.shaan.androiduicomponents.models.UniAcademicInfo
+import com.google.android.material.imageview.ShapeableImageView
+import com.shaan.androiduicomponents.ProfileViewActivity
+import com.shaan.androiduicomponents.ProfileDashboardSheet
 
 class HomePage : AppCompatActivity() {
     companion object {
@@ -24,6 +50,9 @@ class HomePage : AppCompatActivity() {
 
     private lateinit var toolbar: MaterialToolbar
     private lateinit var bottomNavigation: BottomNavigationView
+    private var universities = mutableListOf<University>()
+    private var fetchJob: Job? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate: Starting HomePage")
@@ -31,6 +60,8 @@ class HomePage : AppCompatActivity() {
             setContentView(R.layout.activity_home)
             setupToolbar()
             setupClickListeners()
+            loadUniversities()
+//            setupProfileNavigation()
         } catch (e: Exception) {
             Log.e(TAG, "onCreate: Error initializing HomePage", e)
             Toast.makeText(this, "Error initializing app", Toast.LENGTH_SHORT).show()
@@ -74,11 +105,12 @@ class HomePage : AppCompatActivity() {
                     startActivity(Intent(this, NotificationListActivity::class.java))
                     true
                 }
-//                R.id.action_profile -> {
-//                    Log.d(TAG, "onOptionsItemSelected: Showing profile dashboard")
-//                    showProfileDashboard()
-//                    true
-//                }
+                R.id.action_profile -> {
+                    Log.d(TAG, "onOptionsItemSelected: Showing profile dashboard")
+                    val profileDashboardSheet = ProfileDashboardSheet()
+                    profileDashboardSheet.show(supportFragmentManager, "ProfileDashboard")
+                    true
+                }
                 else -> super.onOptionsItemSelected(item)
             }
         } catch (e: Exception) {
@@ -120,7 +152,8 @@ class HomePage : AppCompatActivity() {
                     Log.d(TAG, "Logout clicked, handling logout process")
                     try {
                         dismiss()
-                        val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                        val sharedPreferences =
+                            getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
                         sharedPreferences.edit().clear().apply()
                         Log.d(TAG, "User preferences cleared")
 
@@ -151,7 +184,71 @@ class HomePage : AppCompatActivity() {
             startActivity(Intent(this, activityClass))
         } catch (e: Exception) {
             Log.e(TAG, "navigateToActivity: Failed to navigate to ${activityClass.simpleName}", e)
-            Toast.makeText(this, "Error opening ${activityClass.simpleName}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Error opening ${activityClass.simpleName}", Toast.LENGTH_SHORT)
+                .show()
         }
+    }
+
+    private fun loadUniversities() {
+        val loadingProgressBar = findViewById<ProgressBar>(R.id.loadingProgressBar)
+        
+        fetchJob?.cancel()
+        fetchJob = lifecycleScope.launch(Dispatchers.Main) {
+            try {
+                loadingProgressBar.visibility = View.VISIBLE
+                
+                val result = withContext(Dispatchers.IO) {
+                    FirebaseHelper.fetchUniversities()
+                }
+                
+                result.fold(
+                    onSuccess = { universityList ->
+                        universities.clear()
+                        universities.addAll(universityList)
+                        loadingProgressBar.visibility = View.GONE
+                    },
+                    onFailure = { exception ->
+                        Log.e("HomePage", "Error loading universities", exception)
+                        Toast.makeText(
+                            this@HomePage,
+                            "Error loading universities",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        loadingProgressBar.visibility = View.GONE
+                    }
+                )
+            } catch (e: Exception) {
+                Log.e("HomePage", "Error in coroutine", e)
+                loadingProgressBar.visibility = View.GONE
+            }
+        }
+    }
+//
+//    private fun setupProfileNavigation() {
+//        val profileImage = findViewById<ShapeableImageView>(R.id.profileImage)
+//        profileImage.setOnClickListener {
+//            Log.d(TAG, "Profile image clicked: Showing profile dashboard")
+//            try {
+//                val profileDashboard = ProfileDashboardSheet().apply {
+//                    setOnViewProfileClickListener {
+//                        startActivity(Intent(this@HomePage, ProfileViewActivity::class.java))
+//                        dismiss()
+//                    }
+//                    setOnLogoutClickListener {
+//                        onLogoutClick?.invoke()
+//                    }
+//                }
+//                profileDashboard.show(supportFragmentManager, ProfileDashboardSheet.TAG)
+//            } catch (e: Exception) {
+//                Log.e(TAG, "Error showing profile dashboard", e)
+//                Toast.makeText(this, "Error showing profile", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        fetchJob?.cancel()
+        universities.clear()
     }
 }

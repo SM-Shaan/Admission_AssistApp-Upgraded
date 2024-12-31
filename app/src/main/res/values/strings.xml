@@ -2,4 +2,5 @@
     <string name="app_name">Admission Navigator</string>
     <string name="next">Next</string>
     <string name="submit">Submit</string>
+    <string name="no_deadlines_message">No deadlines available</string>
 </resources>

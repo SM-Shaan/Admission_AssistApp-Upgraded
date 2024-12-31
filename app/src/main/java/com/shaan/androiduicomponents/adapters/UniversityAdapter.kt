@@ -6,6 +6,8 @@ import android.widget.TextView
 import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
 import com.shaan.androiduicomponents.models.University
+import com.bumptech.glide.Glide
+import com.google.android.material.imageview.ShapeableImageView
 
 class UniversityAdapter(
     private var universities: List<University>,
@@ -17,6 +19,7 @@ class UniversityAdapter(
     private val shortlistedUniversities = mutableSetOf<String>()
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val logo: ShapeableImageView = view.findViewById(R.id.universityLogo)
         val nameText: TextView = view.findViewById(R.id.universityNameText)
         val locationText: TextView = view.findViewById(R.id.universityLocation)
         val shortlistButton: ImageButton = view.findViewById(R.id.shortlistButton)
@@ -24,10 +27,24 @@ class UniversityAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val university = universities[position]
+        
+        // Load university logo
+        val logoUrl = university.generalInfo.imageUrl
+        if (!logoUrl.isNullOrEmpty()) {
+            Glide.with(holder.logo.context)
+                .load(logoUrl)
+                .placeholder(R.drawable.ic_public_university)
+                .error(R.drawable.ic_public_university)
+                .centerCrop()
+                .into(holder.logo)
+        } else {
+            holder.logo.setImageResource(R.drawable.ic_public_university)
+        }
+
         holder.nameText.text = university.generalInfo.name
         holder.locationText.text = university.generalInfo.location
 
-        holder.nameText.setOnClickListener {
+        holder.itemView.setOnClickListener {
             onItemClick(university)
         }
 

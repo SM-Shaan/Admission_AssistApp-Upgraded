@@ -58,11 +58,11 @@ class HomePage2 : AppCompatActivity() {
                     startActivity(Intent(this, NotificationListActivity::class.java))
                     true
                 }
-//                R.id.action_profile -> {
-//                    Log.d(TAG, "onOptionsItemSelected: Showing profile dashboard")
-//                    showProfileDashboard()
-//                    true
-//                }
+                R.id.action_profile -> {
+                    Log.d(TAG, "onOptionsItemSelected: Showing profile dashboard")
+                    showProfileDashboard()
+                    true
+                }
                 else -> super.onOptionsItemSelected(item)
             }
         } catch (e: Exception) {
@@ -95,7 +95,7 @@ class HomePage2 : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_profile -> {
-                    showProfileDashboard()
+                    navigateToActivity(NotificationListActivity::class.java)
                     false
                 }
                 else -> false
