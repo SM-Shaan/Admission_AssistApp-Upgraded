@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Subtle gradient background -->
+    <item>
+        <shape>
+            <gradient
+                android:angle="45"
+                android:startColor="#FFFFFF"
+                android:endColor="#F8F9FA"/>
+            <corners android:radius="16dp"/>
+        </shape>
+    </item>
+    <!-- Optional: Very subtle pattern overlay -->
+    <item>
+        <bitmap
+            android:tileMode="repeat"
+            android:alpha="0.05"/>
+    </item>
+</layer-list>

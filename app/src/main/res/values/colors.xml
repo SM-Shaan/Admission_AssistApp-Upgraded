@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors -->
+    <color name="primary">#F44336</color>
+    <color name="primary_light">#FF7961</color>
+    <color name="primary_dark">#BA000D</color>
+
+    <!-- Secondary Colors -->
+    <color name="secondary">#FF5722</color>
+    <color name="secondary_light">#FF8A50</color>
+    <color name="secondary_dark">#C41C00</color>
+
+    <!-- Accent Colors -->
+    <color name="accent">#FF9800</color>
+    <color name="accent_light">#FFC947</color>
+    <color name="accent_dark">#C66900</color>
+
+    <!-- Legacy Colors (Required for Backward Compatibility) -->
+    <color name="purple_500">#F44336</color>
+    <color name="purple_700">#BA000D</color>
+    <color name="teal_200">#FF8A50</color>
+    <color name="grey">#757575</color>
+    <color name="buttoncolor">#F44336</color>
+    <color name="colorCustomColor1">#F44336</color>
+
+    <!-- Material Design Theme Colors -->
+    <color name="md_theme_errorContainer">#F44336</color>
+    <color name="md_theme_errorContainer_mediumContrast">#BA000D</color>
+
+    <!-- Neutral Colors -->
+    <color name="background">#FAFAFA</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="card_background">#FFFFFF</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#DE000000</color>
+    <color name="text_secondary">#99000000</color>
+    <color name="text_hint">#61000000</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    <color name="text_on_secondary">#FFFFFF</color>
+
+    <!-- Status Colors -->
+    <color name="success">#4CAF50</color>
+    <color name="warning">#FFC107</color>
+    <color name="error">#D32F2F</color>
+    <color name="info">#2196F3</color>
+
+    <!-- Standard Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- Gradient Colors -->
+    <color name="gradient_start">#F44336</color>
+    <color name="gradient_center">#FF5722</color>
+    <color name="gradient_end">#FF9800</color>
+
+<!--    status_pending, status_upcoming, status_completed -->
+    <color name="status_pending">#FFC107</color>
+    <color name="status_upcoming">#2196F3</color>
+    <color name="status_completed">#4CAF50</color>
+
+<!--    <color name="primary_light">#E3F2FD</color>-->
+    <color name="shortlist_icon_color">@color/primary</color>
+
+</resources>
