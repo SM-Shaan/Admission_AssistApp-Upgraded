@@ -176,10 +176,16 @@
     </style>
 
     <style name="Theme.YourApp" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Surface</item>
-        <item name="actionMenuTextColor">@color/black</item>
-        <item name="android:actionMenuTextColor">@color/black</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.MaterialComponents.Light</item>
+        <!-- Primary brand color -->
+        <item name="colorPrimary">@color/toolbar_background</item>
+        <item name="colorPrimaryVariant">@color/status_bar</item>
+        <item name="colorOnPrimary">@color/toolbar_text</item>
+        
+        <!-- Status bar color -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        
+        <!-- Toolbar style -->
+        <item name="toolbarStyle">@style/AppToolbarStyle</item>
     </style>
 
     <attr name="colorCustomColor1" format="color"/>

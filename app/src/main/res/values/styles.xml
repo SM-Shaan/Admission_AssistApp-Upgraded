@@ -43,4 +43,12 @@
         <item name="cardElevation">2dp</item>
         <item name="cornerRadius">16dp</item>
     </style>
+
+    <!-- Toolbar Style -->
+    <style name="AppToolbarStyle" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">@color/toolbar_background</item>
+        <item name="titleTextColor">@color/toolbar_text</item>
+        <item name="android:elevation">4dp</item>
+        <item name="colorControlNormal">@color/toolbar_icon</item>
+    </style>
 </resources>

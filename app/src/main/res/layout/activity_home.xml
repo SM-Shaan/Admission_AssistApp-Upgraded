@@ -48,6 +48,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Welcome Back!"
+                            android:textStyle="bold"
                             android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
                             android:textColor="@color/white"/>
 
@@ -165,52 +166,70 @@
 
 
             <!-- Popular Universities Section -->
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
+                android:orientation="vertical"
+                android:padding="16dp">
 
+                <!-- Header with View All button -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-                    <!-- Section Header -->
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="Popular Universities"
-                        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"/>
+                        android:textStyle="bold"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+                        android:textColor="@color/text_primary"/>
 
-                    <!-- Loading Progress -->
-                    <ProgressBar
-                        android:id="@+id/loadingProgressBar"
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/viewAllPopularUniversities"
+                        style="@style/Widget.Material3.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="8dp"
-                        android:visibility="gone"/>
+                        android:textSize="10dp"
+                        android:textColor="@color/black"
 
-                    <!-- Universities List -->
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/popularUniversitiesRecyclerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:clipToPadding="false"
-                        android:orientation="horizontal"
-                        android:paddingHorizontal="4dp"
-                        android:scrollbars="none"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-
+                        android:text="View All"/>
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+
+                <!-- Loading and Empty States -->
+                <ProgressBar
+                    android:id="@+id/popularUniversitiesProgressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/popularUniversitiesEmptyState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No popular universities available"
+                    android:textAlignment="center"
+                    android:padding="16dp"
+                    android:visibility="gone"/>
+
+                <!-- Horizontal RecyclerView for Popular Universities -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/popularUniversitiesRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingTop="8dp"/>
+            </LinearLayout>
+
             <!-- Main Features Section -->
             <TextView
                 android:layout_width="match_parent"
+                android:textStyle="bold"
                 android:layout_height="wrap_content"
                 android:text="Main Features"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
@@ -375,7 +394,7 @@
                         <ImageView
                             android:layout_width="56dp"
                             android:layout_height="56dp"
-                            android:src="@drawable/ic_engineering"
+                            android:src="@drawable/baseline_search_24"
                             app:tint="@color/white"/>
 
                         <TextView
@@ -409,7 +428,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Coming Soon"
+                    android:text="Coming Soon : "
+                    android:textStyle="bold"
                     android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                     android:textColor="@color/text_primary"/>
 
@@ -573,7 +593,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:text="Quick Compare"
-        app:icon="@drawable/ic_help"/>
+        android:text="Compare"
+        app:icon="@drawable/ic_compare"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

@@ -66,4 +66,10 @@
     <color name="filter_button_default">#FF684F</color>
     <color name="filter_button_selected">#D94F35</color>
 
+    <!-- Toolbar Colors -->
+    <color name="toolbar_background">@color/md_theme_errorContainer</color>
+    <color name="toolbar_text">#FFFFFF</color>
+    <color name="toolbar_icon">#FFFFFF</color>
+    <color name="status_bar">@color/md_theme_errorContainer</color>
+
 </resources>
