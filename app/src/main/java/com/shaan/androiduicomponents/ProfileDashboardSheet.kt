@@ -224,13 +224,15 @@ class ProfileDashboardSheet : BottomSheetDialogFragment() {
                 "FAQ",
                 "Contact Support",
                 "Report a Problem",
-                "About App"
+                "About App",
+                "Add University"
             )) { _, which ->
                 when (which) {
                     0 -> openFAQ()
                     1 -> contactSupport()
                     2 -> reportProblem()
                     3 -> showAboutApp()
+                    4 -> adUniversity()
                 }
             }
             .show()
@@ -314,6 +316,10 @@ class ProfileDashboardSheet : BottomSheetDialogFragment() {
 
     private fun showAboutApp() {
         // Show app information
+    }
+
+    private fun adUniversity() {
+        startActivity(Intent(requireContext(), AddUniversityActivity::class.java))
     }
 
     fun setOnViewProfileClickListener(listener: () -> Unit) {

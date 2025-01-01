@@ -1,12 +1,16 @@
 package com.shaan.androiduicomponents.models
 
 import java.io.Serializable
+import com.google.firebase.firestore.ServerTimestamp
+import java.util.Date
 
 data class University(
     val generalInfo: GeneralInfo,
     val academicInfo: UniAcademicInfo,
     val admissionInfo: AdmissionInfo,
-    val additionalInfo: AdditionalInfo
+    val additionalInfo: AdditionalInfo,
+    @ServerTimestamp
+    val createdAt: Date? = null
 ) : Serializable
 
 data class GeneralInfo(

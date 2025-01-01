@@ -63,4 +63,7 @@
 <!--    <color name="primary_light">#E3F2FD</color>-->
     <color name="shortlist_icon_color">@color/primary</color>
 
+    <color name="filter_button_default">#FF684F</color>
+    <color name="filter_button_selected">#D94F35</color>
+
 </resources>

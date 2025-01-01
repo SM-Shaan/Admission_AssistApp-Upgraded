@@ -117,9 +117,9 @@
                             android:textAppearance="@style/TextAppearance.Material3.BodyMedium"/>
 
                         <TextView
+                            android:id="@+id/totalUniversitiesTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="156"
                             android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
                             android:textColor="@color/primary"/>
                     </LinearLayout>
@@ -150,7 +150,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="49"
+                            android:text="3"
                             android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
                             android:textColor="@color/primary"/>
                     </LinearLayout>
@@ -181,7 +181,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="107"
+                            android:text="2"
                             android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
                             android:textColor="@color/primary"/>
                     </LinearLayout>

@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="popular_university_height">80dp</dimen>
+    <dimen name="item_spacing">8dp</dimen>
+</resources> 

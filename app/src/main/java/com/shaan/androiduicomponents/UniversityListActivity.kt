@@ -3,6 +3,7 @@ package com.shaan.androiduicomponents
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Job
+import com.google.firebase.firestore.FirebaseFirestore
 
 class UniversityListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUniversityListBinding
@@ -32,6 +34,8 @@ class UniversityListActivity : AppCompatActivity() {
     private lateinit var notificationHelper: NotificationHelper
     private var universities = mutableListOf<University>()
     private var fetchJob: Job? = null
+    private var currentFilter: String = "All"
+    private lateinit var db: FirebaseFirestore
 
     companion object {
         private const val TAG = "UniversityListActivity"
@@ -42,6 +46,9 @@ class UniversityListActivity : AppCompatActivity() {
         binding = ActivityUniversityListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Initialize Firestore
+        db = FirebaseFirestore.getInstance()
+
         notificationHelper = NotificationHelper(this)
 //        setupToolbar()
         setupRecyclerView()
@@ -49,6 +56,8 @@ class UniversityListActivity : AppCompatActivity() {
         setupClearButton()
         checkNotificationPermission()
         loadUniversities()
+        setupFilterButtons()
+        getUniversityCount()
     }
 
     private fun setupRecyclerView() {
@@ -167,11 +176,46 @@ class UniversityListActivity : AppCompatActivity() {
 
     private fun filterUniversities(query: String) {
         val filteredList = if (query.isEmpty()) {
-            universities
+            if (currentFilter == "All") universities
+            else filterUniversitiesByType(currentFilter)
         } else {
-            universities.filter { it.generalInfo.name.contains(query, ignoreCase = true) }
+            universities.filter { university ->
+                val matchesName = university.generalInfo.name.contains(query, ignoreCase = true)
+                val matchesType = university.generalInfo.universityType.contains(query, ignoreCase = true)
+                val matchesFilter = when (currentFilter) {
+                    "All" -> true
+                    "Public", "Private", "Medical", "Engineering" -> matchesTypeFilter(university, currentFilter)
+                    else -> false
+                }
+                (matchesName || matchesType) && matchesFilter
+            }
         }
         adapter.updateList(filteredList)
+    }
+
+    private fun matchesTypeFilter(university: University, filter: String): Boolean {
+        return when (filter) {
+            "Public" -> university.generalInfo.universityType.equals("Public", ignoreCase = true)
+            "Private" -> university.generalInfo.universityType.equals("Private", ignoreCase = true)
+//            "Medical" -> university.academicInfo.departments.any { dept ->
+//                dept.contains("Medical", ignoreCase = true) ||
+//                dept.contains("Medicine", ignoreCase = true) ||
+//                dept.contains("MBBS", ignoreCase = true)
+//            }
+//            "Engineering" -> university.academicInfo.departments.any { dept ->
+//                dept.contains("Engineering", ignoreCase = true) ||
+//                dept.contains("CSE", ignoreCase = true) ||
+//                dept.contains("EEE", ignoreCase = true)
+//            }
+            else -> false
+        }
+    }
+
+    private fun filterUniversitiesByType(type: String): List<University> {
+        return when (type) {
+            "All" -> universities
+            else -> universities.filter { university -> matchesTypeFilter(university, type) }
+        }
     }
 
     private fun showLoading() {
@@ -220,5 +264,119 @@ class UniversityListActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun setupFilterButtons() {
+        binding.apply {
+            filterAll.setOnClickListener {
+                currentFilter = "All"
+                applyFilter()
+                updateFilterButtonStates()
+            }
+
+            filterPublic.setOnClickListener {
+                currentFilter = "Public"
+                applyFilter()
+                updateFilterButtonStates()
+            }
+
+            filterPrivate.setOnClickListener {
+                currentFilter = "Private"
+                applyFilter()
+                updateFilterButtonStates()
+            }
+
+            filterMedical.setOnClickListener {
+                currentFilter = "Medical"
+                applyFilter()
+                updateFilterButtonStates()
+            }
+
+            filterEngineering.setOnClickListener {
+                currentFilter = "Engineering"
+                applyFilter()
+                updateFilterButtonStates()
+            }
+        }
+    }
+
+    private fun applyFilter() {
+        val filteredList = when (currentFilter) {
+            "All" -> {
+                // When showing all universities, get total count again
+                getUniversityCount()
+                universities
+            }
+            "Public" -> universities.filter { 
+                it.generalInfo.universityType.equals("Public", ignoreCase = true) 
+            }
+            "Private" -> universities.filter { 
+                it.generalInfo.universityType.equals("Private", ignoreCase = true) 
+            }
+            "Medical" -> universities.filter { university ->
+                university.academicInfo.departments.any { dept ->
+                    dept.contains("Medical", ignoreCase = true) ||
+                    dept.contains("Medicine", ignoreCase = true) ||
+                    dept.contains("MBBS", ignoreCase = true)
+                }
+            }
+            "Engineering" -> universities.filter { university ->
+                university.academicInfo.departments.any { dept ->
+                    dept.contains("Engineering", ignoreCase = true) ||
+                    dept.contains("CSE", ignoreCase = true) ||
+                    dept.contains("EEE", ignoreCase = true)
+                }
+            }
+            else -> universities
+        }
+        adapter.updateList(filteredList)
+        
+        // Update filtered count
+        if (currentFilter != "All") {
+            binding.totalUniversitiesTextView.text = filteredList.size.toString()
+        }
+    }
+
+    private fun updateFilterButtonStates() {
+        binding.apply {
+            val defaultBgColor = getColor(R.color.filter_button_default)
+            val selectedBgColor = getColor(R.color.filter_button_selected)
+            val defaultTextColor = getColor(R.color.white)
+            val selectedTextColor = getColor(R.color.white)
+
+            filterAll.apply {
+                setTextColor(if (currentFilter == "All") selectedTextColor else defaultTextColor)
+                setBackgroundColor(if (currentFilter == "All") selectedBgColor else defaultBgColor)
+            }
+            filterPublic.apply {
+                setTextColor(if (currentFilter == "Public") selectedTextColor else defaultTextColor)
+                setBackgroundColor(if (currentFilter == "Public") selectedBgColor else defaultBgColor)
+            }
+            filterPrivate.apply {
+                setTextColor(if (currentFilter == "Private") selectedTextColor else defaultTextColor)
+                setBackgroundColor(if (currentFilter == "Private") selectedBgColor else defaultBgColor)
+            }
+            filterMedical.apply {
+                setTextColor(if (currentFilter == "Medical") selectedTextColor else defaultTextColor)
+                setBackgroundColor(if (currentFilter == "Medical") selectedBgColor else defaultBgColor)
+            }
+            filterEngineering.apply {
+                setTextColor(if (currentFilter == "Engineering") selectedTextColor else defaultTextColor)
+                setBackgroundColor(if (currentFilter == "Engineering") selectedBgColor else defaultBgColor)
+            }
+        }
+    }
+
+    private fun getUniversityCount() {
+        db.collection("universitylist")
+            .get()
+            .addOnSuccessListener { documents ->
+                val totalCount = documents.size()
+                binding.totalUniversitiesTextView.text = totalCount.toString()
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error getting university count", e)
+                binding.totalUniversitiesTextView.text = "0"
+            }
     }
 }
