@@ -95,7 +95,7 @@ class HomePage2 : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_profile -> {
-                    navigateToActivity(NotificationListActivity::class.java)
+                    navigateToActivity(ProfileViewActivity::class.java)
                     false
                 }
                 else -> false

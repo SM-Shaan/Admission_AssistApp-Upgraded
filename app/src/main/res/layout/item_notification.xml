@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/purple_700"/>
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/notificationMessage"

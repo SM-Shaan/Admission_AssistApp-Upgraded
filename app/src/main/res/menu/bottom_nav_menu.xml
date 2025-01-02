@@ -13,5 +13,5 @@
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_profile"
-        android:title="Notification"/>
+        android:title="Profile"/>
 </menu> 

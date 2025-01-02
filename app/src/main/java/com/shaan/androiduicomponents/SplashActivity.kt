@@ -4,6 +4,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -20,6 +21,9 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Make status bar transparent
+        window.statusBarColor = Color.TRANSPARENT
+        
         startAnimations()
     }
 
@@ -39,15 +43,20 @@ class SplashActivity : AppCompatActivity() {
             startDelay = 500
         }
 
+        val taglineAnimation = ObjectAnimator.ofFloat(binding.taglineText, "alpha", 0f, 1f).apply {
+            duration = 800
+            startDelay = 1000
+        }
+
         AnimatorSet().apply {
-            playTogether(iconAnimation, textAnimation)
+            playTogether(iconAnimation, textAnimation, taglineAnimation)
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     Handler(Looper.getMainLooper()).postDelayed({
                         startActivity(Intent(this@SplashActivity, Login::class.java))
                         finish()
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-                    }, 500)
+                    }, 1000)
                 }
             })
             start()

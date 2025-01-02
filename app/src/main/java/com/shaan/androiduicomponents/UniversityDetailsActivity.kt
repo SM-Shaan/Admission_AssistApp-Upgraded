@@ -17,11 +17,11 @@ class UniversityDetailsActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.universityNameTextView).text = university?.generalInfo?.name
         findViewById<TextView>(R.id.universityLocationTextView).text = "Location: ${university?.generalInfo?.location}"
-        findViewById<TextView>(R.id.universityEstablishedTextView).text = "Established: ${university?.generalInfo?.established}"
+        findViewById<TextView>(R.id.universityEstablishedTextView).text = "${university?.generalInfo?.established}"
         findViewById<TextView>(R.id.universityDescriptionTextView).text = university?.generalInfo?.description
-        findViewById<TextView>(R.id.universityTypeTextView).text = "Type: ${university?.generalInfo?.universityType}"
+        findViewById<TextView>(R.id.universityTypeTextView).text = "${university?.generalInfo?.universityType}"
         findViewById<TextView>(R.id.universityAdmissionRequirementsTextView).text =  "Required SSC GPA: ${university?.admissionInfo?.requiredSSCGpa}, Required HSC GPA: ${university?.admissionInfo?.requiredHSCGpa}"
-        findViewById<TextView>(R.id.universityTotalSeatsTextView).text = "Total Seats: ${university?.academicInfo?.totalSeats}"
+        findViewById<TextView>(R.id.universityTotalSeatsTextView).text = "${university?.academicInfo?.totalSeats}"
         findViewById<TextView>(R.id.universityAdmissionTestInfoTextView).text = "Test Required: ${university?.admissionInfo?.admissionTestRequired}, Subjects: ${university?.admissionInfo?.admissionTestSubjects?.joinToString(", ")}"
         findViewById<TextView>(R.id.universityAdmissionTestSyllabusTextView).text = university?.admissionInfo?.admissionTestSyllabus
         findViewById<TextView>(R.id.universityAdmissionTestDateTextView).text = "Date: ${university?.admissionInfo?.admissionTestDetails?.date}"

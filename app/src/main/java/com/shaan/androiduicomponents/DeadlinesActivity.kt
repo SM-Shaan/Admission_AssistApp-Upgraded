@@ -16,12 +16,13 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.withContext
 
 class DeadlinesActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDeadlinesBinding
     private lateinit var adapter: DeadlineAdapter
     private var fetchJob: Job? = null
-    private var deadlines = mutableListOf<Deadline>()
+    private val deadlines = mutableListOf<Deadline>()
 
     companion object {
         private const val TAG = "DeadlinesActivity"
@@ -29,19 +30,25 @@ class DeadlinesActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate: Starting DeadlinesActivity")
-
+        
         try {
+            // Initialize binding first
             binding = ActivityDeadlinesBinding.inflate(layoutInflater)
             setContentView(binding.root)
 
+            // Initialize adapter before setting up RecyclerView
+            adapter = DeadlineAdapter()
+
+            // Setup UI components
             setupToolbar()
             setupRecyclerView()
             setupSortButton()
+            
+            // Load data
             loadDeadlines()
         } catch (e: Exception) {
             Log.e(TAG, "onCreate: Error initializing activity", e)
-            Toast.makeText(this, "Error initializing deadlines", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Error initializing deadlines: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -63,16 +70,14 @@ class DeadlinesActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        Log.d(TAG, "setupRecyclerView: Setting up RecyclerView")
         try {
-            adapter = DeadlineAdapter()
             binding.deadlinesRecyclerView.apply {
                 layoutManager = LinearLayoutManager(this@DeadlinesActivity)
                 adapter = this@DeadlinesActivity.adapter
                 addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
             }
         } catch (e: Exception) {
-            Log.e(TAG, "setupRecyclerView: Failed to setup RecyclerView", e)
+            Log.e(TAG, "setupRecyclerView: Error", e)
             throw e
         }
     }
@@ -89,7 +94,9 @@ class DeadlinesActivity : AppCompatActivity() {
             "Ongoing First",
             "Date (Newest)",
             "Date (Oldest)",
-            "University Name (A-Z)"
+            "University Name (A-Z)",
+            "University Name (Z-A)",
+            "Event Type"
         )
 
         MaterialAlertDialogBuilder(this)
@@ -100,7 +107,9 @@ class DeadlinesActivity : AppCompatActivity() {
                     1 -> sortByOngoing()
                     2 -> sortByDate(ascending = false)
                     3 -> sortByDate(ascending = true)
-                    4 -> sortByUniversityName()
+                    4 -> sortByUniversityName(ascending = true)
+                    5 -> sortByUniversityName(ascending = false)
+                    6 -> sortByEventType()
                 }
             }
             .show()
@@ -117,6 +126,7 @@ class DeadlinesActivity : AppCompatActivity() {
             }.thenBy { it.date }
         )
         updateDeadlines(sorted)
+        updateActiveSortChip("Upcoming First")
     }
 
     private fun sortByOngoing() {
@@ -130,6 +140,7 @@ class DeadlinesActivity : AppCompatActivity() {
             }.thenBy { it.date }
         )
         updateDeadlines(sorted)
+        updateActiveSortChip("Ongoing First")
     }
 
     private fun sortByDate(ascending: Boolean) {
@@ -139,11 +150,26 @@ class DeadlinesActivity : AppCompatActivity() {
             deadlines.sortedByDescending { it.date }
         }
         updateDeadlines(sorted)
+        updateActiveSortChip(if (ascending) "Date (Newest)" else "Date (Oldest)")
     }
 
-    private fun sortByUniversityName() {
-        val sorted = deadlines.sortedBy { it.universityName }
+    private fun sortByUniversityName(ascending: Boolean) {
+        val sorted = if (ascending) {
+            deadlines.sortedBy { it.universityName }
+        } else {
+            deadlines.sortedByDescending { it.universityName }
+        }
         updateDeadlines(sorted)
+        updateActiveSortChip(if (ascending) "University Name (A-Z)" else "University Name (Z-A)")
+    }
+
+    private fun sortByEventType() {
+        val sorted = deadlines.sortedWith(
+            compareBy<Deadline> { it.eventType }
+                .thenBy { it.date }
+        )
+        updateDeadlines(sorted)
+        updateActiveSortChip("Event Type")
     }
 
     private fun updateDeadlines(sorted: List<Deadline>) {
@@ -153,59 +179,56 @@ class DeadlinesActivity : AppCompatActivity() {
     }
 
     private fun loadDeadlines() {
-        Log.d(TAG, "loadDeadlines: Starting to fetch deadlines from Firebase")
         showLoading()
-
+        
         fetchJob?.cancel()
         fetchJob = CoroutineScope(Dispatchers.Main).launch {
             try {
                 val db = FirebaseFirestore.getInstance()
-                val universities = db.collection("universitylist")
+                val documents = db.collection("universitylist")
                     .get()
                     .await()
-                    .documents
-                    .mapNotNull { doc ->
-                        try {
-                            val admissionInfo = doc.get("admissionInfo") as? Map<*, *>
-                            val generalInfo = doc.get("generalInfo") as? Map<*, *>
-                            val testDetails = (admissionInfo?.get("admissionTestDetails") as? Map<*, *>)
 
-                            if (testDetails != null && generalInfo != null) {
-                                Deadline(
-                                    universityName = generalInfo["name"]?.toString() ?: "",
-                                    eventType = "Admission Test",
-                                    date = testDetails["date"]?.toString() ?: "",
-                                    time = testDetails["time"]?.toString() ?: ""
-                                )
-                            } else null
-                        } catch (e: Exception) {
-                            Log.e(TAG, "Error parsing document", e)
-                            null
-                        }
+                val newDeadlines = documents.mapNotNull { doc ->
+                    try {
+                        val admissionInfo = doc.get("admissionInfo") as? Map<*, *>
+                        val generalInfo = doc.get("generalInfo") as? Map<*, *>
+                        val testDetails = admissionInfo?.get("admissionTestDetails") as? Map<*, *>
+
+                        if (testDetails != null && generalInfo != null) {
+                            Deadline(
+                                universityName = generalInfo["name"]?.toString() ?: "",
+                                eventType = "Admission Test",
+                                date = testDetails["date"]?.toString() ?: "",
+                                time = testDetails["time"]?.toString() ?: ""
+                            )
+                        } else null
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error parsing document: ${e.message}")
+                        null
                     }
+                }
 
-                if (!universities.isEmpty())  {
-                    hideEmptyState()
-                    val sortedDeadlines = universities.sortedWith(
-                        compareBy<Deadline> {
-                            when {
-                                it.isOngoing() -> 0
-                                it.isUpcoming() -> 1
-                                else -> 2
-                            }
-                        }.thenBy { it.date }
-                    )
-                    adapter.updateDeadlines(sortedDeadlines)
+                withContext(Dispatchers.Main) {
+                    if (newDeadlines.isNotEmpty()) {
+                        deadlines.clear()
+                        deadlines.addAll(newDeadlines)
+                        adapter.updateDeadlines(deadlines)
+                        hideEmptyState()
+                    } else {
+                        showEmptyState()
+                    }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error loading deadlines", e)
-                Toast.makeText(
-                    this@DeadlinesActivity,
-                    "Error loading deadlines: ${e.localizedMessage}",
-                    Toast.LENGTH_LONG
-                ).show()
+                withContext(Dispatchers.Main) {
+                    showError("Failed to load deadlines: ${e.message}")
+                    showEmptyState()
+                }
             } finally {
-                hideLoading()
+                withContext(Dispatchers.Main) {
+                    hideLoading()
+                }
             }
         }
     }
@@ -240,15 +263,30 @@ class DeadlinesActivity : AppCompatActivity() {
 
 
     private fun hideEmptyState() {
-        try {
-            binding.apply {
-                emptyStateView.visibility = View.GONE
-                deadlinesRecyclerView.visibility = View.VISIBLE
-                sortButton.isEnabled = true
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error hiding empty state", e)
+        binding.apply {
+            emptyStateView.visibility = View.GONE
+            deadlinesRecyclerView.visibility = View.VISIBLE
+            sortButton.isEnabled = true
         }
+    }
+
+    private fun updateActiveSortChip(sortName: String) {
+        binding.activeSortChip.apply {
+            text = "Sorted by: $sortName"
+            visibility = View.VISIBLE
+        }
+    }
+
+    private fun showEmptyState() {
+        binding.apply {
+            emptyStateView.visibility = View.VISIBLE
+            deadlinesRecyclerView.visibility = View.GONE
+            sortButton.isEnabled = false
+        }
+    }
+
+    private fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroy() {
